@@ -1,0 +1,33 @@
+{
+  "name": "slack-redux-store",
+  "description": "Use Redux with the Slack API",
+  "version": "0.6.0",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/CharlieHess/slack-redux-store.git"
+  },
+  "author": "Charlie Hess",
+  "license": "MIT",
+  "keywords": [
+    "slack",
+    "redux",
+    "react"
+  ],
+  "scripts": {
+    "test": "mocha --require babel-core/register --recursive --reporter spec test"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.7",
+    "babel-preset-es2016-node5": "^1.1.2",
+    "babel-preset-stage-2": "^6.5.0",
+    "chai": "^3.5.0",
+    "deep-freeze": "0.0.1",
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "@slack/client": "^3.1.0",
+    "lodash": "^4.11.1",
+    "redux": "^3.5.2"
+  }
+}

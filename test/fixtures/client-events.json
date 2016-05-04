@@ -1,0 +1,201 @@
+{
+  "channel_created": {
+    "type": "channel_created",
+    "channel": {
+      "id": "C02QYTVLQ",
+      "is_channel": true,
+      "name": "general",
+      "created": 1448262090,
+      "creator": "U02QYTVLJ"
+    },
+    "event_ts": "1448262090.810507"
+  },
+  "channel_deleted": {
+    "type": "channel_deleted",
+    "channel": "C02QYTVLQ"
+  },
+  "channel_joined": {
+    "type": "channel_joined",
+    "channel": {
+      "id": "C02QYTVLQ",
+      "name": "general",
+      "is_channel": true,
+      "created": 1444959237,
+      "creator": "U02QYTVLJ",
+      "is_archived": false,
+      "is_general": false,
+      "is_member": true,
+      "last_read": "0000000000.000000",
+      "latest": {
+        "user": "U02QYTVLJ",
+        "type": "message",
+        "subtype": "channel_join",
+        "text": "<@U02QYTVLJ|charlie> has joined the channel",
+        "ts": "1448262357.000002"
+      },
+      "unread_count": 0,
+      "unread_count_display": 0,
+      "members": [
+        "U02QYTVLJ",
+        "U0F3LFX6K"
+      ],
+      "topic": {
+        "value": "",
+        "creator": "",
+        "last_set": 0
+      },
+      "purpose": {
+        "value": "",
+        "creator": "",
+        "last_set": 0
+      }
+    }
+  },
+  "channel_left": {
+    "type": "channel_left",
+    "channel": "C02QYTVLQ"
+  },
+  "channel_marked": {
+    "type": "channel_marked",
+    "channel": "C02QYTVLQ",
+    "ts": "1448496754.000002",
+    "unread_count": 0,
+    "unread_count_display": 0,
+    "num_mentions": 0,
+    "num_mentions_display": 0,
+    "mention_count": 0,
+    "mention_count_display": 0
+  },
+  "channel_rename": {
+    "type": "channel_rename",
+    "channel": {
+      "id": "C02QYTVLQ",
+      "is_channel": true,
+      "name": "a-channel-by-any-other-name",
+      "created": "1448262090"
+    },
+    "event_ts": "1448262186.810954"
+  },
+  "channel_archive": {
+    "type": "channel_archive",
+    "channel": "C02QYTVLQ",
+    "user": "U02QYTVLJ"
+  },
+  "channel_unarchive": {
+    "type": "channel_unarchive",
+    "channel": "C02QYTVLQ",
+    "user": "U02QYTVLJ"
+  },
+  "message::rtm_client_add_message": {
+    "type": "message",
+    "channel": "C02QYTVLQ",
+    "text": "The Inaugural Message",
+    "ts": "1448496754.000002"
+  },
+  "message::message_changed": {
+    "type": "message",
+    "message": {
+      "type": "message",
+      "user": "U02QYTVLJ",
+      "text": "Who dis?",
+      "edited": {
+        "user": "U02QYTVLJ",
+        "ts": "1448496795.000000"
+      },
+      "ts": "1448496754.000002"
+    },
+    "subtype": "message_changed",
+    "hidden": true,
+    "channel": "C02QYTVLQ",
+    "event_ts": "1448496795.861984",
+    "ts": "1448496795.000005"
+  },
+  "message::message_deleted": {
+    "type": "message",
+    "deleted_ts": "1448496754.000002",
+    "subtype": "message_deleted",
+    "hidden": true,
+    "channel": "C02QYTVLQ",
+    "event_ts": "1448496783.861926",
+    "ts": "1448496783.000004"
+  },
+  "message::channel_join": {
+    "user": "U02QYTVLJ",
+    "type": "message",
+    "subtype": "channel_join",
+    "text": "<@U02QYTVLJ|charlie> has joined the channel",
+    "channel": "C02QYTVLQ",
+    "ts": "1448413360.000002"
+  },
+  "message::channel_leave": {
+    "user": "U02QYTVLJ",
+    "type": "message",
+    "subtype": "channel_leave",
+    "text": "<@U02QYTVLJ|charlie> has left the channel",
+    "channel": "C02QYTVLQ",
+    "ts": "1448413366.000003"
+  },
+  "user_change": {
+    "type": "user_change",
+    "user": {
+      "id": "U02QYTVLJ",
+      "name": "charlie",
+      "real_name": "Charlie Hess",
+      "is_admin": true,
+      "is_owner": true,
+      "is_primary_owner": true,
+      "is_restricted": false,
+      "is_ultra_restricted": false,
+      "is_bot": false
+    }
+  },
+  "pref_change": {
+    "type": "pref_change",
+    "name": "display_real_names_override",
+    "value": 1
+  },
+  "presence_change": {
+    "type": "presence_change",
+    "user": "U02QYTVLJ",
+    "presence": "away"
+  },
+  "manual_presence_change": {
+    "type": "manual_presence_change",
+    "presence": "online",
+    "event_ts": "1448323107.373650"
+  },
+  "reaction_added": {
+    "type": "reaction_added",
+    "user": "U02QYTVLJ",
+    "item": {
+      "type": "message",
+      "channel": "C02QYTVLQ",
+      "ts": "1448496754.000002"
+    },
+    "reaction": "sparkles",
+    "event_ts": "1450340664.394875"
+  },
+  "reaction_removed": {
+    "type": "reaction_removed",
+    "user": "U02QYTVLJ",
+    "item": {
+      "type": "message",
+      "channel": "C02QYTVLQ",
+      "ts": "1448496754.000002"
+    },
+    "reaction": "sparkles",
+    "event_ts": "1450340723.395241"
+  },
+  "bot_added": {
+    "type": "bot_added",
+    "bot": {
+      "id": "B0Y8J586A",
+      "deleted": false,
+      "name": "bot",
+      "icons": {
+        "image_48": "https://a.slack-edge.com/12b5a/plugins/gcalendar/assets/service_48.png"
+      }
+    },
+    "cache_ts": 1448003197
+  }
+}
