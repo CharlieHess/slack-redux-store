@@ -1,6 +1,6 @@
 import {omit} from 'lodash';
 import {RTM_EVENTS} from '@slack/client';
-import {addOrUpdateChannel, leaveChannel, archiveChannel} from './channel-helpers';
+import {addOrUpdateChannel, leaveChannel, archiveChannel, userIsTyping} from './channel-helpers';
 import {isHandledByMessagesReducer} from './utils';
 import messagesReducer from './messages-reducer';
 
@@ -30,7 +30,7 @@ export default function reduce(state = {}, action) {
     return messagesReducer(state, action);
   }
 
-  let {type, message, userId} = action;
+  let {type, message} = action;
 
   switch (type) {
   case RTM_EVENTS.CHANNEL_CREATED:
@@ -40,11 +40,13 @@ export default function reduce(state = {}, action) {
   case RTM_EVENTS.CHANNEL_DELETED:
     return omit(state, message.channel);
   case RTM_EVENTS.CHANNEL_LEFT:
-    return leaveChannel(state, message, userId);
+    return leaveChannel(state, message, action.userId);
   case RTM_EVENTS.CHANNEL_ARCHIVE:
     return archiveChannel(state, message, true);
   case RTM_EVENTS.CHANNEL_UNARCHIVE:
     return archiveChannel(state, message, false);
+  case RTM_EVENTS.USER_TYPING:
+    return userIsTyping(state, message, action.isTyping);
   case RTM_EVENTS.CHANNEL_HISTORY_CHANGED:
   default:
     return state;

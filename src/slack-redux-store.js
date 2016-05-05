@@ -1,7 +1,6 @@
 import {find, reduce} from 'lodash';
 import {createStore, combineReducers} from 'redux';
-import {RTM_EVENTS} from '@slack/client';
-import {actionTypeWithSubtype, actionNeedsSelfParameters} from './reducers/utils';
+import actionForMessage from './action-creators';
 
 import * as reducers from './reducers';
 
@@ -56,23 +55,13 @@ export default class SlackReduxStore {
   /**
    * Handles a real-time message by dispatching an action to the store.
    *
-   * @param  {String} userId      The ID of the active user
-   * @param  {String} teamId      The ID of the active team
-   * @param  {String} messageType The type of message
-   * @param  {Object} message     The message from the socket
+   * @param  {String} userId  The ID of the active user
+   * @param  {String} teamId  The ID of the active team
+   * @param  {String} type    The type of message
+   * @param  {Object} message The message from the socket
    */
-  handleRtmMessage(userId, teamId, messageType, message) {
-    let action = {
-      message,
-      type: messageType === RTM_EVENTS.MESSAGE ?
-        actionTypeWithSubtype(message.subtype) :
-        messageType
-    };
-
-    if (actionNeedsSelfParameters(messageType)) {
-      Object.assign(action, {userId, teamId});
-    }
-
+  handleRtmMessage(userId, teamId, type, message) {
+    let action = actionForMessage(type, message, userId, teamId);
     this.store.dispatch(action);
   }
 

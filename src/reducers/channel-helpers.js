@@ -39,3 +39,24 @@ export function archiveChannel(state, message, is_archived) {
     }
   };
 }
+
+export function userIsTyping(state, message, isTyping) {
+  let channel = state[message.channel];
+  if (!channel) return state;
+  
+  let existingTypists = channel.typing || [];
+
+  return {
+    ...state,
+    [channel.id]: {
+      ...channel,
+      typing: isTyping ? [
+        ...existingTypists,
+        message.user
+      ] : [
+        ...existingTypists.slice(0, existingTypists.indexOf(message.user)),
+        ...existingTypists.slice(existingTypists.indexOf(message.user) + 1)
+      ]
+    }
+  };
+}

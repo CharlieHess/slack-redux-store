@@ -1,5 +1,5 @@
 import {RTM_EVENTS} from '@slack/client';
-import {addOrUpdateChannel} from './channel-helpers';
+import {addOrUpdateChannel, userIsTyping} from './channel-helpers';
 import {isHandledByMessagesReducer} from './utils';
 import messagesReducer from './messages-reducer';
 
@@ -17,6 +17,8 @@ export default function reduce(state = {}, action) {
     return setDmOpen(state, message, true);
   case RTM_EVENTS.IM_CLOSE:
     return setDmOpen(state, message, false);
+  case RTM_EVENTS.USER_TYPING:
+    return userIsTyping(state, message, action.isTyping);
   case RTM_EVENTS.IM_HISTORY_CHANGED:
   default:
     return state;
