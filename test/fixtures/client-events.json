@@ -197,5 +197,10 @@
       }
     },
     "cache_ts": 1448003197
+  },
+  "user_typing": {
+    "type": "user_typing",
+    "channel": "C02QYTVLQ",
+    "user": "U02QYTVLJ"
   }
 }

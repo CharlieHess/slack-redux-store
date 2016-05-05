@@ -159,4 +159,18 @@ describe('the channels reducer', () => {
     state = reduce(state, action);
     expect(state[testChannelId].is_archived).to.be.false;
   });
+  
+  it('keeps track of typing users', () => {
+    let action = {
+      type: RTM_EVENTS.USER_TYPING,
+      message: getRtmMessage(RTM_EVENTS.USER_TYPING),
+      isTyping: true
+    };
+
+    let state = lodash.cloneDeep(initialState);
+    deepFreeze(state);
+
+    state = reduce(state, action);
+    expect(state[testChannelId].typing).to.include(testUserId);
+  });
 });

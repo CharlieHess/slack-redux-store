@@ -1,6 +1,7 @@
 import {find, reduce} from 'lodash';
-import {createStore, combineReducers} from 'redux';
-import actionForMessage from './action-creators';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import actionForMessage from './actions';
 
 import * as reducers from './reducers';
 
@@ -12,9 +13,11 @@ export default class SlackReduxStore {
    * @param  {Object} payload The full rtm.start response
    */
   cacheRtmStart(payload) {
-    let api = combineReducers(reducers.default);
-    let initialState = this.getInitialStateFromRtmStart(payload);
-    this.store = createStore(api, initialState);
+    this.store = createStore(
+      combineReducers(reducers.default),
+      this.getInitialStateFromRtmStart(payload),
+      applyMiddleware(thunkMiddleware)
+    );
   }
 
   /**
@@ -31,7 +34,7 @@ export default class SlackReduxStore {
    *    teams: {}
    *  }
    */
-  getInitialStateFromRtmStart(payload) {
+  getInitialStateFromRtmStart(payload = {}) {
     let users = {};
     let channels = {};
     let ims = {};
@@ -44,10 +47,14 @@ export default class SlackReduxStore {
     for (let group of payload.groups || []) groups[group.id] = group;
     for (let bot of payload.bots || []) bots[bot.id] = bot;
 
-    let self = Object.assign({}, users[payload.self.id], payload.self);
-    let teams = {
+    let self = payload.self ? {
+      ...users[payload.self.id],
+      ...payload.self
+    } : {};
+      
+    let teams = payload.team ? {
       [payload.team.id]: payload.team
-    };
+    } : {};
 
     return {users, channels, ims, groups, bots, self, teams};
   }
