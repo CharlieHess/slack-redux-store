@@ -1,7 +1,7 @@
 {
   "name": "slack-redux-store",
   "description": "Use Redux with the Slack API",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "lib/index.js",
   "repository": {
     "type": "git",

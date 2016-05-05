@@ -69,13 +69,33 @@ export default class SlackReduxStore {
    */
   handleRtmMessage(userId, teamId, type, message) {
     let action = actionForMessage(type, message, userId, teamId);
+    this.dispatch(action);
+  }
+  
+  /**  
+   * Dispatches an action to the underlying store.
+   *    
+   * @param  {Object} action The action to dispatch   
+   */   
+  dispatch(action) {
     this.store.dispatch(action);
   }
 
+  /**
+   * Subscribes a listener to state changes from the store.
+   *    
+   * @param  {Function} listener The listener to subscribe   
+   * @return {Function}          A method that will unsubscribe it
+   */   
   subscribe(listener) {
     return this.store.subscribe(listener);
   }
 
+  /**
+   * Returns the current state of the store.
+   *    
+   * @return {Object}  The state tree   
+   */   
   getState() {
     return this.store.getState();
   }
