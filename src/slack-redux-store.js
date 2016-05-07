@@ -14,6 +14,7 @@ export default class SlackReduxStore {
    * @param  {Array} storeEnhancers An array of store enhancers to apply
    */
   constructor(storeEnhancers = []) {
+    let initialState = {};
     let toCompose = [
       applyMiddleware(thunkMiddleware),
       ...storeEnhancers
@@ -21,6 +22,7 @@ export default class SlackReduxStore {
 
     this.store = createStore(
       combineReducers(reducers.default),
+      initialState,
       compose(...toCompose)
     );
   }
