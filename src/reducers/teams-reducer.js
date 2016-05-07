@@ -1,9 +1,12 @@
 import {RTM_EVENTS} from '@slack/client';
+import {RTM_START} from './helpers';
 
 export default function reduce(state = {}, action) {
   let {type, message, teamId} = action;
 
   switch (type) {
+  case RTM_START:
+    return rtmStart(state, action.data.team);
   case RTM_EVENTS.TEAM_PREF_CHANGE:
     return changePreference(state, message, teamId);
   case RTM_EVENTS.TEAM_DOMAIN_CHANGE:
@@ -13,6 +16,13 @@ export default function reduce(state = {}, action) {
   default:
     return state;
   }
+}
+
+function rtmStart(state, team) {
+  return team ? {
+    ...state,
+    [team.id]: team
+  } : state;
 }
 
 function changePreference(state, {name, value}, teamId) {

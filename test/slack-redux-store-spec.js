@@ -14,7 +14,7 @@ const SlackReduxStore = require('../src').default;
 describe('the Slack Redux Store', function() { // eslint-disable-line
   it('handles async actions', function(done) { // eslint-disable-line
     this.timeout(5000);
-    
+
     let store = new SlackReduxStore();
     let rtmStart = {
       channels: [{
@@ -22,12 +22,12 @@ describe('the Slack Redux Store', function() { // eslint-disable-line
       }]
     };
     store.cacheRtmStart(rtmStart);
-    
+
     let message = getRtmMessage(RTM_EVENTS.USER_TYPING);
     store.handleRtmMessage(testUserId, 'T02QYTVLG', RTM_EVENTS.USER_TYPING, message);
-    
+
     expect(store.getState().channels[testChannelId].typing).to.include(testUserId);
-    
+
     setTimeout(() => {
       expect(store.getState().channels[testChannelId].typing).to.be.empty;
       done();

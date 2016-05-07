@@ -1,4 +1,5 @@
 import {RTM_EVENTS} from '@slack/client';
+import {RTM_START, populateFromRtmStart} from './helpers';
 
 /**
  * users: {
@@ -22,6 +23,8 @@ import {RTM_EVENTS} from '@slack/client';
 
 export default function reduce(state = {}, action) {
   switch (action.type) {
+  case RTM_START:
+    return populateFromRtmStart(state, action.data.users);
   case RTM_EVENTS.USER_CHANGE:
   case RTM_EVENTS.TEAM_JOIN:
     return addOrUpdateUser(state, action.message);

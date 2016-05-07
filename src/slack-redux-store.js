@@ -1,5 +1,6 @@
 import {find, reduce} from 'lodash';
-import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
+import {RTM_START} from './reducers/helpers';
 import thunkMiddleware from 'redux-thunk';
 import actionForMessage from './actions';
 
@@ -8,55 +9,32 @@ import * as reducers from './reducers';
 export default class SlackReduxStore {
 
   /**
-   * Create the store and use the `rtm.start` response to hydrate it.
+   * Creates a new instance of `SlackReduxStore`.
    *
-   * @param  {Object} payload The full rtm.start response
+   * @param  {Array} storeEnhancers An array of store enhancers to apply
    */
-  cacheRtmStart(payload) {
+  constructor(storeEnhancers = []) {
+    let toCompose = [
+      applyMiddleware(thunkMiddleware),
+      ...storeEnhancers
+    ];
+
     this.store = createStore(
       combineReducers(reducers.default),
-      this.getInitialStateFromRtmStart(payload),
-      applyMiddleware(thunkMiddleware)
+      compose(...toCompose)
     );
   }
 
   /**
-   * Transforms the `rtm.start` response from arrays to keyed objects. The
-   * overall shape of the state tree looks like:
+   * Hydrates the store with the `rtm.start` response.
    *
-   * @example {
-   *    users: {},
-   *    channels: {},
-   *    ims: {},
-   *    groups: {},
-   *    bots: {},
-   *    self: {},
-   *    teams: {}
-   *  }
+   * @param  {Object} payload The full `rtm.start` response
    */
-  getInitialStateFromRtmStart(payload = {}) {
-    let users = {};
-    let channels = {};
-    let ims = {};
-    let groups = {};
-    let bots = {};
-
-    for (let user of payload.users || []) users[user.id] = user;
-    for (let channel of payload.channels || []) channels[channel.id] = channel;
-    for (let im of payload.ims || []) ims[im.id] = im;
-    for (let group of payload.groups || []) groups[group.id] = group;
-    for (let bot of payload.bots || []) bots[bot.id] = bot;
-
-    let self = payload.self ? {
-      ...users[payload.self.id],
-      ...payload.self
-    } : {};
-      
-    let teams = payload.team ? {
-      [payload.team.id]: payload.team
-    } : {};
-
-    return {users, channels, ims, groups, bots, self, teams};
+  cacheRtmStart(payload) {
+    this.dispatch({
+      type: RTM_START,
+      data: payload
+    });
   }
 
   /**
@@ -71,31 +49,31 @@ export default class SlackReduxStore {
     let action = actionForMessage(type, message, userId, teamId);
     this.dispatch(action);
   }
-  
-  /**  
+
+  /**
    * Dispatches an action to the underlying store.
-   *    
-   * @param  {Object} action The action to dispatch   
-   */   
+   *
+   * @param  {Object} action The action to dispatch
+   */
   dispatch(action) {
     this.store.dispatch(action);
   }
 
   /**
    * Subscribes a listener to state changes from the store.
-   *    
-   * @param  {Function} listener The listener to subscribe   
+   *
+   * @param  {Function} listener The listener to subscribe
    * @return {Function}          A method that will unsubscribe it
-   */   
+   */
   subscribe(listener) {
     return this.store.subscribe(listener);
   }
 
   /**
    * Returns the current state of the store.
-   *    
-   * @return {Object}  The state tree   
-   */   
+   *
+   * @return {Object}  The state tree
+   */
   getState() {
     return this.store.getState();
   }

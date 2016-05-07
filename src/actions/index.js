@@ -11,7 +11,7 @@ export const USER_TYPING_TIMEOUT = 3000;
  * @param  {Object} message The message from the socket
  * @param  {String} userId  The ID of the active user
  * @param  {String} teamId  The ID of the active team
- * 
+ *
  * @return {Object}         The created action
  */
 export default function actionForMessage(type, message, userId, teamId) {
@@ -35,7 +35,7 @@ function asyncActionForType(type, message) {
   case RTM_EVENTS.USER_TYPING:
     return (dispatch) => {
       dispatch({ type, message, isTyping: true });
-      
+
       setTimeout(() => {
         dispatch({ type, message, isTyping: false });
       }, USER_TYPING_TIMEOUT);

@@ -1,5 +1,5 @@
 import {RTM_EVENTS} from '@slack/client';
-import {addOrUpdateChannel, userIsTyping} from './channel-helpers';
+import {RTM_START, populateFromRtmStart, addOrUpdateChannel, userIsTyping} from './helpers';
 import {isHandledByMessagesReducer} from './utils';
 import messagesReducer from './messages-reducer';
 
@@ -11,6 +11,8 @@ export default function reduce(state = {}, action) {
   let {type, message} = action;
 
   switch (type) {
+  case RTM_START:
+    return populateFromRtmStart(state, action.data.ims);
   case RTM_EVENTS.IM_CREATED:
     return addOrUpdateChannel(state, message);
   case RTM_EVENTS.IM_OPEN:

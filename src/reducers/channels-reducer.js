@@ -1,6 +1,6 @@
 import {omit} from 'lodash';
 import {RTM_EVENTS} from '@slack/client';
-import {addOrUpdateChannel, leaveChannel, archiveChannel, userIsTyping} from './channel-helpers';
+import {RTM_START, populateFromRtmStart, addOrUpdateChannel, leaveChannel, archiveChannel, userIsTyping} from './helpers';
 import {isHandledByMessagesReducer} from './utils';
 import messagesReducer from './messages-reducer';
 
@@ -33,6 +33,8 @@ export default function reduce(state = {}, action) {
   let {type, message} = action;
 
   switch (type) {
+  case RTM_START:
+    return populateFromRtmStart(state, action.data.channels);
   case RTM_EVENTS.CHANNEL_CREATED:
   case RTM_EVENTS.CHANNEL_JOINED:
   case RTM_EVENTS.CHANNEL_RENAME:

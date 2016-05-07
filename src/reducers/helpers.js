@@ -1,3 +1,19 @@
+import {reduce} from 'lodash';
+
+export const RTM_START = 'RTM_START';
+
+export function populateFromRtmStart(state, newObjects) {
+  let objectsById = reduce(newObjects, (acc, objectWithId) => {
+    acc[objectWithId.id] = objectWithId;
+    return acc;
+  }, {});
+
+  return {
+    ...state,
+    ...objectsById
+  };
+}
+
 export function addOrUpdateChannel(state, {channel}) {
   let existingChannel = state[channel.id];
 
@@ -43,7 +59,7 @@ export function archiveChannel(state, message, is_archived) {
 export function userIsTyping(state, message, isTyping) {
   let channel = state[message.channel];
   if (!channel) return state;
-  
+
   let existingTypists = channel.typing || [];
 
   return {
