@@ -53,6 +53,15 @@ export default class SlackReduxStore {
   }
 
   /**
+   * Returns the underlying Redux store.
+   *
+   * @return {Object}  The result of Redux `createStore`
+   */
+  getStore() {
+    return this.store;
+  }
+
+  /**
    * Dispatches an action to the underlying store.
    *
    * @param  {Object} action The action to dispatch
