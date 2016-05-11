@@ -11,19 +11,27 @@ export default class SlackReduxStore {
   /**
    * Creates a new instance of `SlackReduxStore`.
    *
-   * @param  {Array} storeEnhancers An array of store enhancers to apply
+   * @param {Object}  options
+   * @param {Object}  options.reducers      An object containing additional reducer functions
+   * @param {Object}  options.initialState  The initial state to pass to the store
+   * @param {Array}   options.enhancers     An array of store enhancers to compose
    */
-  constructor(storeEnhancers = []) {
-    let initialState = {};
-    let toCompose = [
+  constructor(options = {}) {
+    let reducer = combineReducers({
+      ...reducers.default,
+      ...options.reducers
+    });
+
+    let initialState = options.initialState || {};
+    let enhancers = [
       applyMiddleware(thunkMiddleware),
-      ...storeEnhancers
+      ...(options.enhancers || [])
     ];
 
     this.store = createStore(
-      combineReducers(reducers.default),
+      reducer,
       initialState,
-      compose(...toCompose)
+      compose(...enhancers)
     );
   }
 
