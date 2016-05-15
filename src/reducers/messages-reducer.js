@@ -1,6 +1,10 @@
-import {omit, findIndex, forEachRight, without} from 'lodash';
+import _ from 'lodash';
 import {RTM_EVENTS, RTM_MESSAGE_SUBTYPES} from '@slack/client';
+import {CLIENT_ACTIONS} from '../actions/client-actions';
 import {DEFAULT_MESSAGE_ACTION, subtypeFromActionType} from './utils';
+
+export const MIN_TS = '0000000000.000000';
+export const MAX_TS = '9999999999.999999';
 
 /**
  * Handles the messages subtree for channels, ims, and groups.
@@ -10,7 +14,8 @@ import {DEFAULT_MESSAGE_ACTION, subtypeFromActionType} from './utils';
  * @param  {Object} message} The message object from the socket
  * @return {Object}          The modified state
  */
-export default function reduce(state, {type, message}) {
+export default function reduce(state, action) {
+  let {type, message} = action;
 
   if (type.startsWith(RTM_EVENTS.MESSAGE)) {
     // Since this reducer is shared across channels, groups, and ims, we need to
@@ -39,6 +44,8 @@ export default function reduce(state, {type, message}) {
     return addReaction(state, message);
   case RTM_EVENTS.REACTION_REMOVED:
     return removeReaction(state, message);
+  case CLIENT_ACTIONS.UPDATE_HISTORY:
+    return updateHistory(state, action.channelId, action.response);
   default:
     return state;
   }
@@ -87,7 +94,7 @@ function deleteMessage(state, message) {
     [channel.id]: {
       ...channel,
       messages: {
-        ...omit(channel.messages, message.deleted_ts),
+        ..._.omit(channel.messages, message.deleted_ts),
         [message.ts]: message
       }
     }
@@ -138,7 +145,7 @@ function markChannel(state, message) {
 
   let unreadCount = 0;
 
-  forEachRight(channel.messages, (m) => {
+  _.forEachRight(channel.messages, (m) => {
     if (m.ts > message.ts && !m.hidden) {
       unreadCount++;
       return true;
@@ -163,7 +170,7 @@ function addReaction(state, {item, reaction, user}) {
   let message = channel.messages[item.ts];
   if (!message) return state;
 
-  let reactionIndex = findIndex(message.reactions, { name: reaction });
+  let reactionIndex = _.findIndex(message.reactions, { name: reaction });
   let reactionToAddOrIncrement;
 
   if (reactionIndex !== -1) {
@@ -208,14 +215,14 @@ function removeReaction(state, {item, reaction, user}) {
   let message = channel.messages[item.ts];
   if (!message) return state;
 
-  let reactionIndex = findIndex(message.reactions, { name: reaction });
+  let reactionIndex = _.findIndex(message.reactions, { name: reaction });
   if (reactionIndex === -1) return state;
 
   let existingReaction = message.reactions[reactionIndex];
   let reactionToRemoveOrDecrement = existingReaction.count > 1 ? [{
     ...existingReaction,
     count: existingReaction.count - 1,
-    users: without(existingReaction.users, user)
+    users: _.without(existingReaction.users, user)
   }] : [];
 
   return {
@@ -232,6 +239,35 @@ function removeReaction(state, {item, reaction, user}) {
             ...message.reactions.slice(reactionIndex + 1)
           ]
         }
+      }
+    }
+  };
+}
+
+function updateHistory(state, channelId, response) {
+  let channel = state[channelId];
+  if (!channel || !response.ok) return state;
+
+  let min_ts = channel.min_ts || MAX_TS;
+  let max_ts = channel.max_ts || MIN_TS;
+
+  let messages = _.reduce(response.messages, (history, message) => {
+    if (message.ts < min_ts) min_ts = message.ts;
+    if (message.ts > max_ts) max_ts = message.ts;
+
+    history[message.ts] = message;
+    return history;
+  }, {});
+
+  return {
+    ...state,
+    [channel.id]: {
+      ...channel,
+      min_ts,
+      max_ts,
+      messages: {
+        ...channel.messages,
+        ...messages
       }
     }
   };

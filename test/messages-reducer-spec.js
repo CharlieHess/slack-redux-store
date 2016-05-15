@@ -10,12 +10,14 @@ const slackClient = require('@slack/client');
 const fixtures = require('./fixtures');
 
 const getRtmMessage = fixtures.getRtmMessage;
+const getWebResponse = fixtures.getWebResponse;
 const testChannelId = fixtures.testChannelId;
 const testUserId = fixtures.testUserId;
 const initialState = fixtures.initialState;
 
 const RTM_EVENTS = slackClient.RTM_EVENTS;
 const RTM_MESSAGE_SUBTYPES = slackClient.RTM_MESSAGE_SUBTYPES;
+const CLIENT_ACTIONS = require('../src/actions/client-actions').CLIENT_ACTIONS;
 
 describe('the messages reducer', () => {
   it('adds messages', () => {
@@ -170,4 +172,25 @@ describe('the messages reducer', () => {
     expect(reaction.count).to.equal(count);
     expect(reaction.users).to.include(...users);
   }
+
+  it('updates channel history', () => {
+    let action = {
+      type: CLIENT_ACTIONS.UPDATE_HISTORY,
+      channelId: testChannelId,
+      response: getWebResponse(CLIENT_ACTIONS.UPDATE_HISTORY)
+    };
+
+    let state = lodash.cloneDeep(initialState);
+    deepFreeze(state);
+    state = reduce(state, action);
+
+    let testChannel = state[testChannelId];
+
+    expect(testChannel.messages).to.have.keys('1448496754.000002',
+      '1358546515.000008',
+      '1358546515.000007');
+    expect(testChannel.min_ts).to.equal('1358546515.000007');
+    expect(testChannel.max_ts).to.equal('1448496754.000002');
+    expect(testChannel.messages[testChannel.min_ts].reactions).to.have.length(2);
+  });
 });
