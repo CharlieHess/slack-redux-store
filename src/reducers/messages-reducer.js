@@ -1,13 +1,14 @@
 import _ from 'lodash';
 import {RTM_EVENTS, RTM_MESSAGE_SUBTYPES} from '@slack/client';
+import {DEFAULT_MESSAGE_ACTION, subtypeFromActionType, isHandledByMessagesReducer} from './utils';
 import {CLIENT_ACTIONS} from '../actions/client-actions';
-import {DEFAULT_MESSAGE_ACTION, subtypeFromActionType} from './utils';
 
 export const MIN_TS = '0000000000.000000';
 export const MAX_TS = '9999999999.999999';
 
 /**
- * Handles the messages subtree for channels, ims, and groups.
+ * Handles the messages subtree for channels, ims, and groups. Note that other
+ * reducers call into this
  *
  * @param  {Object} state    The starting state
  * @param  {String} {type    The type of message action
@@ -16,6 +17,10 @@ export const MAX_TS = '9999999999.999999';
  */
 export default function reduce(state, action) {
   let {type, message} = action;
+
+  if (!isHandledByMessagesReducer(type)) {
+    throw new Error(`${type} not supported`);
+  }
 
   if (type.startsWith(RTM_EVENTS.MESSAGE)) {
     // Since this reducer is shared across channels, groups, and ims, we need to

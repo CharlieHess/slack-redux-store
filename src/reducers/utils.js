@@ -1,4 +1,5 @@
 import {RTM_EVENTS} from '@slack/client';
+import {CLIENT_ACTIONS} from '../actions/client-actions';
 
 export const DEFAULT_MESSAGE_ACTION = 'rtm_client_add_message';
 
@@ -7,7 +8,8 @@ const SELF_PARAMETERS_REQUIRED = [RTM_EVENTS.CHANNEL_LEFT, RTM_EVENTS.GROUP_LEFT
   RTM_EVENTS.TEAM_DOMAIN_CHANGE, RTM_EVENTS.TEAM_RENAME];
 
 const MESSAGE_REDUCER_TYPES = [RTM_EVENTS.CHANNEL_MARKED,
-  RTM_EVENTS.REACTION_ADDED, RTM_EVENTS.REACTION_REMOVED];
+  RTM_EVENTS.REACTION_ADDED, RTM_EVENTS.REACTION_REMOVED,
+  CLIENT_ACTIONS.UPDATE_HISTORY];
 
 export function actionTypeWithSubtype(subtype, delim) {
   return [RTM_EVENTS.MESSAGE, subtype || DEFAULT_MESSAGE_ACTION].join(delim || '::');
